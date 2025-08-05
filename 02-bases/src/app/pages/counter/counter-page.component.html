@@ -1,0 +1,7 @@
+<h1>Counter: {{ counter }}</h1>
+<h1>Counter: {{ counterSignal() }}</h1> <!-- la senal es una funcion y lo tengo que invocar-->
+  <br>
+  <button (click)="increment(1)">+1</button>
+  <button (click)="increment(-1)">-1</button>
+  <button (click)="resetCounter()">Reset</button>
+
