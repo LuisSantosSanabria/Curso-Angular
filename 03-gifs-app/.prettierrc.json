@@ -1,0 +1,9 @@
+{
+  "plugins": ["prettier-plugin-organize-attributes"],
+  "htmlWhitespaceSensitivity": "ignore",
+  "printWidth": 80,
+  "bracketSameLine": false,
+  "organizeAttributes": {
+    "mode": "multiline"
+  }
+}
