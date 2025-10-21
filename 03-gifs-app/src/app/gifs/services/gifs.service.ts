@@ -1,12 +1,19 @@
 import { HttpClient } from '@angular/common/http';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal, ChangeDetectionStrategy } from '@angular/core';
 import { environment } from '@environments/environment';
 import type { GiphyResponse } from '../interfaces/giphy.interfaces';
 import { Gif } from '../interfaces/gif.interface';
 import { GifMapper } from '../mapper/gif.mapper';
-import { map, tap } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 // cuando usamos interfaces en bueno usar la palabra type
 // para que typescript sepa que es una interfaz
+
+const loadFromLocalStorage = () => {
+  const gifsFromLocalStorage = localStorage.getItem('gifs') ?? '{}'; // estamos grabando un objeto como string
+  const gifs = JSON.parse(gifsFromLocalStorage);
+  console.log(gifs);
+  return gifs;
+}
 
 @Injectable({providedIn: 'root'})
 export class GifService {
@@ -18,7 +25,7 @@ export class GifService {
   // creamos una señal que va a tener un array de gifs
   trendingGifsLoading = signal(true);
 
-  searchHistory = signal<Record<string, Gif[]>>({});
+  searchHistory = signal<Record<string, Gif[]>>( loadFromLocalStorage() );
   // un objeto que tiene como llave un string y como valor un array de gifs
   // el record es un tipo de dato que nos permite crear un objeto con llaves dinamicas
   searhHistoryKeys = computed(()=> Object.keys(this.searchHistory()));
@@ -27,8 +34,12 @@ export class GifService {
 
   constructor(){
     this.loadTrendingGifs();
-    console.log('Servicio de gifs listo');
   }
+
+  saveGifLocalStorae = effect(() => {
+    const historyString = JSON.stringify(this.searchHistory());
+    localStorage.setItem('gifs', historyString);
+  });
 
   loadTrendingGifs(){
      this.http.get<GiphyResponse>(`${ environment.giphyUrl }/gifs/trending`, {
@@ -46,7 +57,7 @@ export class GifService {
       });
   }
 
-  searchGifs(query: string){ // tengo un servcio que me devuelve un observable
+  searchGifs(query: string): Observable<Gif[]> { // tengo un servcio que me devuelve un observable
       return this.http.get<GiphyResponse>(`${ environment.giphyUrl }/gifs/search`, {
       params: {
         api_key:environment.giphyApiKey,
@@ -54,6 +65,7 @@ export class GifService {
         q: query,
       }
      })
+     //pipe nos permite transformar los datos que vienen del observable
      .pipe(
       map( ({data}) => data),
       map( (items) => GifMapper.mapGiphyItemsToGifArray(items)),
@@ -70,5 +82,9 @@ export class GifService {
 
       console.log({search:gifs});
       }); */
+  }
+
+  getHistoryGifs( query : string):Gif[] {
+    return this.searchHistory()[query] ?? [];
   }
 }
