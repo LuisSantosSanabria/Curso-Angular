@@ -10,7 +10,10 @@ static mapRestCountryToCountry( restCountry: RESTCountry) : Country {
     flag: restCountry.flag,
     flagSvg: restCountry.flags.svg,
     name: restCountry.translations['spa'].common ?? 'Sin nombre en español',
-    population: restCountry.population
+    population: restCountry.population,
+
+    region: restCountry.region,
+    subRegion: restCountry.subregion,
   }
 }
 
