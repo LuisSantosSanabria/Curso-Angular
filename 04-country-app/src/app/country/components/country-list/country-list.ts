@@ -13,7 +13,7 @@ export class CountryList {
   // recibir el array de paises
   countries = input.required<Country[]>();
 
-  errorMessage = input<String | unknown | null>();
+  errorMessage = input<string | unknown | null>();
   isLoading = input<boolean>(false);
   isEmpty = input<boolean>(false);
 }

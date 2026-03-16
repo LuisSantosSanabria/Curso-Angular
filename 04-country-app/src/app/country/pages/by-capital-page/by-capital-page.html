@@ -3,7 +3,10 @@
 (value)="onSearch($event)"/> -->
 <!-- nueva forma con resource -->
  <country-search-input placeholder="Buscar por capital"
-(value)="query.set($event)"/>
+(value)="query.set($event)"
+[debounceTime]="300"
+[initialValue]="query()"
+/>
 
 <!-- comp tabla -->
 <!--  @if (isError()) {

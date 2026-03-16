@@ -1,7 +1,10 @@
 <!-- componete Buscar -->
 <country-search-input
 (value)="query.set($event)"
- placeholder="Buscar por Pais"/>
+ placeholder="Buscar por Pais"
+ [initialValue]="query()"
+ />
+
 
 <!-- comp tabla -->
 <country-list
